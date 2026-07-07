@@ -25,6 +25,10 @@ class InventoryPage(BasePage):
         item = self.page.locator(".inventory_item").filter(has_text=product_name)
         item.get_by_role("button", name="Remove").click()
 
+    def open_product(self, product_name: str) -> None:
+        item = self.page.locator(".inventory_item").filter(has_text=product_name)
+        item.locator(".inventory_item_name").click()
+
     def sort_by(self, value: str) -> None:
         self.sort_dropdown.select_option(value=value)
 
@@ -45,6 +49,15 @@ class InventoryPage(BasePage):
             "() => [...document.querySelectorAll('.inventory_item_img img')]"
             ".every(img => img.complete && img.naturalWidth > 0)"
         )
+
+    def get_product_info_map(self) -> dict[str, tuple[str, str]]:
+        info_map = {}
+        for item in self.items.all():
+            name = item.locator(".inventory_item_name").inner_text()
+            desc = item.locator(".inventory_item_desc").inner_text()
+            price = item.locator(".inventory_item_price").inner_text()
+            info_map[name] = (desc, price)
+        return info_map
 
     def get_product_image_map(self) -> dict[str, str]:
         image_map = {}

@@ -12,6 +12,11 @@ class CheckoutStepTwoPage(BasePage):
         self.tax_label = page.locator(".summary_tax_label")
         self.total_label = page.locator(".summary_total_label")
         self.finish_button = page.get_by_role("button", name="Finish")
+        self.line_item_names = page.locator(".inventory_item_name")
+
+    def get_line_item_names(self) -> list[str]:
+        items = self.line_item_names.all_inner_texts()
+        return items
 
     def get_subtotal(self) -> float:
         subtotal = self.subtotal_label.inner_text().split("$")[1]
