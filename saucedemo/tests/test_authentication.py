@@ -5,8 +5,11 @@ from data.users import PASSWORD, USERS
 from pages.inventory_page import InventoryPage
 
 
-def test_successful_login_standard_user(login_as):
-    """TC-01: standard_user logs in and lands on a fully populated inventory page."""
+def test_successful_login_standard_user(login_as, error_monitor):
+    """TC-01: standard_user logs in and lands on a fully populated inventory page, with no
+    console errors, uncaught JS exceptions, or failed/4xx-5xx network requests (excluding the
+    known events.backtrace.io, see conftest.error_monitor)."""
+    
     login_page = login_as(USERS["standard"])
     page = login_page.page
     inventory_page = InventoryPage(page)
@@ -20,6 +23,8 @@ def test_successful_login_standard_user(login_as):
         expect(image).to_be_visible()
 
     expect(login_page.error_message).not_to_be_visible()
+
+    assert not error_monitor, "\n".join(error_monitor)
 
 
 @pytest.mark.parametrize(

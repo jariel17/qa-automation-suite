@@ -125,10 +125,11 @@ POSTAL_CODE = "12345"
         ),
     ],
 )
-def test_full_checkout_happy_path(login_as, username):
-    """TC-11: standard_user checks out one item, inventory to complete, no errors at any step.
-    error_user hits a documented defect: Last Name silently drops its typed value, and the
-    validation gate that should catch the resulting empty field doesn't."""
+def test_full_checkout_happy_path(login_as, error_monitor, username):
+    """TC-11: standard_user checks out one item, inventory to complete, no errors at any step,
+    including no console errors, uncaught JS exceptions, or failed/4xx-5xx network requests
+    (excluding the known events.backtrace.io, see conftest.error_monitor).
+    """
     login_page = login_as(username)
     page = login_page.page
     inventory_page = InventoryPage(page)
@@ -172,6 +173,8 @@ def test_full_checkout_happy_path(login_as, username):
     expect(checkout_complete.complete_text).to_have_text(
         "Your order has been dispatched, and will arrive just as fast as the pony can get there!"
     )
+
+    assert not error_monitor, "\n".join(error_monitor)
 
 @pytest.mark.parametrize(
     "username,first_name,last_name,postal_code,expected_error",

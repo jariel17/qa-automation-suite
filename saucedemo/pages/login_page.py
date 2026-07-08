@@ -15,7 +15,13 @@ class LoginPage(BasePage):
     def load(self) -> None:
         self.page.goto(BASE_URL)
 
-    def login(self, username: str, password: str) -> None:
+    def fill_credentials(self, username: str, password: str) -> None:
         self.username_field.fill(username)
         self.password_field.fill(password)
+
+    def submit(self) -> None:
         self.login_button.click()
+
+    def login(self, username: str, password: str) -> None:
+        self.fill_credentials(username, password)
+        self.submit()
