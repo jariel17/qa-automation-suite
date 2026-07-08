@@ -16,8 +16,7 @@ def fetch_psi_result(url: str, strategy: str) -> dict[str, Any]:
     """Run a PageSpeed Insights Lighthouse audit for url/strategy and return the raw JSON.
 
     Retries up to PSI_MAX_ATTEMPTS times on a transient server error (5xx) or a read timeout, 
-    with a growing backoff between attempts
-    (PSI_RETRY_BACKOFFS_SECONDS). A 4xx (bad key, quota exceeded) fails immediately since a
+    with a growing backoff between attempts. A 4xx fails immediately since a
     retry would not fix it.
     """
     params = {
